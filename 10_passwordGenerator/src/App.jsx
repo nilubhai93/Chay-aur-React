@@ -1,4 +1,4 @@
-import { useState, useCallback,useEffect } from 'react'
+import { useState, useCallback,useEffect,useRef } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -8,6 +8,10 @@ function App() {
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [charAllowed, setCharAllowed] = useState(false);
   const [password, setPassword] = useState("");
+
+
+  // useRef hook
+  const passwordRef = useRef(null)  
 
 
   const passwordGenerator = useCallback(() => {
@@ -27,6 +31,14 @@ function App() {
   }, [length, numberAllowed, charAllowed])
 
 
+
+  const copyPasswordToClipboard = useCallback(()=>{
+    passwordRef.current?.select();
+    passwordRef.current?.setSelectionRange(0,3);
+    window.navigator.clipboard.writeText(password)
+  },[password])
+
+
 useEffect(()=>{
   passwordGenerator()
 },[length, numberAllowed, charAllowed,passwordGenerator])
@@ -42,8 +54,9 @@ useEffect(()=>{
             className="outline-none w-full py-2 px-3 text-black"
             placeholder="Password"
             readOnly
+            ref={passwordRef}
           />
-          <button className='outline-none bg-blue-700 text-white p-3 py-0.5 shrink-0'>copy</button>
+          <button onClick={copyPasswordToClipboard} className='outline-none bg-blue-700 text-white p-3 py-0.5 shrink-0'>copy</button>
         </div>
 
         <div className='flex justify-around text-sm gap-x-2 mb-5'>
